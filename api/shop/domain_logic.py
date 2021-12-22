@@ -1,5 +1,5 @@
-from RestFolder.database.db import add
-from RestFolder.database.dtos import Product
+from database.db import add
+from database.dtos import Product
 
 def create_product(data):
     name = data.get("name")

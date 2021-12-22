@@ -1,8 +1,8 @@
 from flask import Flask, Blueprint
-from RestFolder import settings
-from RestFolder.api.myapi import api
-from RestFolder.api.shop.endpoints.products import namespace as productsnamespace
-from RestFolder.database.db import db
+import settings
+from api.myapi import api
+from api.shop.endpoints.products import namespace as productsnamespace
+from database.db import db
 
 app = Flask(__name__)
 

@@ -1,5 +1,5 @@
 from flask_restx import fields
-from RestFolder.api.myapi import api
+from api.myapi import api
 
 
 product = api.model("Product", {

@@ -1,11 +1,11 @@
 from flask import request
-from RestFolder.api.myapi import api
+from api.myapi import api
 from flask_restx import Resource
-from RestFolder.api.shop.api_definition import page_with_products, product
-from RestFolder.api.shop.domain_logic import create_product
-from RestFolder.api.shop.parsers import pagination_parser as pagination
-from RestFolder.database.dtos import Product
-from RestFolder.database import db as database
+from api.shop.api_definition import page_with_products, product
+from api.shop.domain_logic import create_product
+from api.shop.parsers import pagination_parser as pagination
+from database.dtos import Product
+from database import db as database
 
 namespace = api.namespace("shop/products", description="Ops on my shop items")
 
