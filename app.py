@@ -23,10 +23,7 @@ def init_app(app):
     app.register_blueprint(blueprint)
     db.init_app(app)
 
-def main():
-    init_app(app)
-    app.run(debug=settings.FLASK_DEBUG)
 
+init_app(app)
+app.run(debug=settings.FLASK_DEBUG)
 
-if __name__ == "__main__":
-    main()
