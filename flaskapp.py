@@ -17,7 +17,7 @@ def configure_app(app):
 
 def init_app(app):
     configure_app(app)
-    blueprint = Blueprint("api", __name__, url_prefix="/api")
+    blueprint = Blueprint("api", __name__, url_prefix="/")
     api.init_app(blueprint)
     api.add_namespace(productsnamespace)
     app.register_blueprint(blueprint)
