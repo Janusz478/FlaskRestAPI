@@ -1,1 +1,1 @@
-from app import app as application
+from FlaskRestAPI.app import app as application
