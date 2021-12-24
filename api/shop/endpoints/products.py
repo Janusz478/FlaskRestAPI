@@ -13,6 +13,7 @@ namespace = api.namespace("shop/products", description="Ops on my shop items")
 
 # /api/shop/products
 @namespace.route("/")
+@api.response(200, "Success")
 class Offer(Resource):
     @api.expect(pagination)
     @api.marshal_with(page_with_products)
@@ -26,7 +27,6 @@ class Offer(Resource):
 
     @api.expect(product)
     @api.doc(security="basicAuth")
-    @api.response(200, "Success")
     @api.response(403, "Forbidden")
     def post(self):
         req_auth = request.authorization
@@ -39,7 +39,7 @@ class Offer(Resource):
 
 
 @namespace.route("shop/<int:my_id>")
-#@namespace.route("shop/<int:year>/<int:month>/")
+@api.response(200, "Success")
 @api.response(404, "There is not product with this ID yet")
 class ProductItem(Resource):
     def get(self, my_id):
