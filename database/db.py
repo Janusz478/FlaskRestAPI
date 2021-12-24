@@ -10,3 +10,8 @@ def add(product):
 def reset():
     db.drop_all()
     db.create_all()
+
+def add_category(category):
+    db.session.add(category)
+    db.session.commit()
+    
