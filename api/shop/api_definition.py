@@ -1,7 +1,6 @@
 from flask_restx import fields
 from api.myapi import api
 
-
 product = api.model("Product", {
     "id": fields.Integer(readOnly=True, description="The identifier of the product"),
     "name": fields.String(required=True, description="Product name"),
