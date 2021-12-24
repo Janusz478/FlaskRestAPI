@@ -1,11 +1,12 @@
 from flask import request
-from api.myapi import api
+from api.myapi import api, user_auth
 from flask_restx import Resource
 from api.shop.api_definition import page_with_products, product
 from api.shop.domain_logic import create_product
 from api.shop.parsers import pagination_parser as pagination
 from database.dtos import Product
 from database import db as database
+import hashlib
 
 namespace = api.namespace("shop/products", description="Ops on my shop items")
 
@@ -24,9 +25,17 @@ class Offer(Resource):
         return products
 
     @api.expect(product)
+    @api.doc(security="basicAuth")
+    @api.response(200, "Success")
+    @api.response(403, "Forbidden")
     def post(self):
-        create_product(request.json)
-        return None, 200
+        req_auth = request.authorization
+        if req_auth and req_auth.username == user_auth["username"] and \
+                hashlib.sha256(req_auth.password.encode()).hexdigest() == user_auth["hashed_password"]:
+            create_product(request.json)
+            return None, 200
+        else:
+            return None, 403
 
 
 @namespace.route("shop/<int:my_id>")
