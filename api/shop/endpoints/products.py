@@ -1,49 +1,65 @@
 from flask import request
-from api.myapi import api, user_auth
+from api.myapi import api, authorize
 from flask_restx import Resource
-from api.shop.api_definition import page_with_products, product
-from api.shop.domain_logic import create_product
-from api.shop.parsers import pagination_parser as pagination
-from database.dtos import Product
-from database import db as database
-import hashlib
+from api.shop.api_definition import page_with_products, product, product_add
+from api.shop.domain_logic import create_product, update_product, delete_product
+from api.shop.parsers import pagination_parser
+from database.db import Product
 
 namespace = api.namespace("shop/products", description="Ops on my shop items")
 
 
 # /api/shop/products
 @namespace.route("/")
-@api.response(200, "Success")
 class Offer(Resource):
-    @api.expect(pagination)
+    @api.expect(pagination_parser)
     @api.marshal_with(page_with_products)
     def get(self):
-        database.add(Product("kuchen"))
-        args = pagination.parse_args(request)
+        args = pagination_parser.parse_args(request)
         page = args.get("page", 1)
         items_per_page = args.get("items_per_page", 10)
-        products = Product.query.paginate(page, items_per_page, error_out=False)
+        product_name = args.get("product_name")
+        if product_name:
+            products = Product.query.filter_by(name=product_name).paginate(page, items_per_page, error_out=False)
+        else:
+            products = Product.query.paginate(page, items_per_page, error_out=False)
         return products
 
-    @api.expect(product)
+    @api.expect(product_add)
     @api.doc(security="basicAuth")
+    @api.response(200, "Success")
     @api.response(403, "Forbidden")
+    @api.response(400, "Bad Request, Product was wrong")
+    @api.marshal_with(product)
     def post(self):
-        req_auth = request.authorization
-        if req_auth and req_auth.username == user_auth["username"] and \
-                hashlib.sha256(req_auth.password.encode()).hexdigest() == user_auth["hashed_password"]:
-            create_product(request.json)
-            return None, 200
+        if authorize(request):
+            return create_product(request.json)
         else:
             return None, 403
 
 
-@namespace.route("shop/<int:my_id>")
+@namespace.route("/<int:id>")
 @api.response(200, "Success")
 @api.response(404, "There is not product with this ID yet")
 class ProductItem(Resource):
-    def get(self, my_id):
-        return Product.query.filter(Product.id == my_id).one()
-    # def put(self, id):
+    @api.marshal_with(product)
+    def get(self, id):
+        return Product.query.filter(Product.id == id).one()
 
-    # def delete(self, id):
+    @api.response(403, "Forbidden")
+    @api.expect(product_add)
+    @api.doc(security="basicAuth")
+    def put(self, id):
+        if authorize(request):
+            return update_product(id, request.json)
+        else:
+            return None, 403
+
+    @api.response(403, "Forbidden")
+    @api.doc(security="basicAuth")
+    def delete(self, id):
+        if authorize(request):
+            return delete_product(id)
+        else:
+            return None, 403
+

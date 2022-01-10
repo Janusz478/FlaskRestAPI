@@ -25,5 +25,5 @@ def init_app(app):
 
 
 init_app(app)
-#app.run(debug=settings.FLASK_DEBUG)
+app.run(debug=settings.FLASK_DEBUG)
 
