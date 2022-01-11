@@ -1,5 +1,6 @@
 from database.db import db, Product, Category, add_product, add_category, add_if_not_exists_category
 
+
 def create_product(data):
     name = data.get("name")
     category_name = data.get("category_name")
@@ -10,6 +11,7 @@ def create_product(data):
         product = Product(name=name)
     add_product(product)
     return product, 200
+
 
 def read_product(data):
     pass
@@ -33,5 +35,3 @@ def delete_product(id):
     product = Product.query.filter_by(id=id).first()
     db.session.delete(product)
     db.session.commit()
-
-#TODO: implement read, update, delete

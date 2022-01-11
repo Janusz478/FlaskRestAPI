@@ -20,7 +20,9 @@ class Offer(Resource):
         items_per_page = args.get("items_per_page", 10)
         product_name = args.get("product_name")
         if product_name:
-            products = Product.query.filter(Product.name.like("%{}%".format(product_name))).paginate(page, items_per_page, error_out=False)
+            products = Product.query.filter(Product.name.like("%{}%".format(product_name))).paginate(page,
+                                                                                                     items_per_page,
+                                                                                                     error_out=False)
         else:
             products = Product.query.paginate(page, items_per_page, error_out=False)
         return products
@@ -62,4 +64,3 @@ class ProductItem(Resource):
             return delete_product(id)
         else:
             return None, 403
-
